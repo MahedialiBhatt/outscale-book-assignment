@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Management App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container" id="homePage">
+    <h2>User Authentication</h2>
+
+    <!-- User Registration Form -->
+    <form id="registrationForm">
+      <label for="regUsername">Username:</label>
+      <input type="text" id="regUsername" required>
+      <label for="regPassword">Password:</label>
+      <input type="password" id="regPassword" required>
+      <button type="submit">Register</button>
+    </form>
+
+    <!-- User Login Form -->
+    <form id="loginForm">
+      <label for="loginUsername">Username:</label>
+      <input type="text" id="loginUsername" required>
+      <label for="loginPassword">Password:</label>
+      <input type="password" id="loginPassword" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <div class="container" id="bookPage" style="display: none;">
+    <!-- Book Publishing Form -->
+    <h2>Book Publishing</h2>
+    <form id="publishForm">
+      <label for="bookTitle">Title:</label>
+      <input type="text" id="bookTitle" required>
+      <label for="bookAuthor">Author:</label>
+      <input type="text" id="bookAuthor" required>
+      <button type="submit">Publish Book</button>
+    </form>
+
+    <!-- Search by Title Form -->
+    <h2>Search by Title</h2>
+    <label for="searchTitle">Search by Title:</label>
+    <input type="text" id="searchTitle">
+    <button onclick="searchBooks()">Search</button>
+    <div id="searchResults"></div>
+
+    <!-- Unpublishing Button -->
+    <h2>Unpublishing</h2>
+    <button onclick="unpublishBook()">Unpublish Book</button>
+
+    <!-- Display User's Books -->
+    <h2>List of User's Books</h2>
+    <div id="userBooks"></div>
+
+    <!-- Display Published Books -->
+    <h2>Get Published Books</h2>
+    <div id="publishedBooks"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
