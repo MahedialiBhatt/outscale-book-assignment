@@ -48,10 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert(data.message);
+        alert("Sucessfully registered!");
         showHomePage();
       } else {
-        alert(`Error: ${data.message}`);
+        alert(data.message);
       }
     } catch (error) {
       console.error("Error during registration:", error);
@@ -78,14 +78,19 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Login successful!");
         showBookPage();
         // Save the token in local storage for future requests
-        localStorage.setItem("authToken", data.accessToken);
+        localStorage.setItem("authToken", data.data.accessToken);
       } else {
-        alert(`Error: ${data.message}`);
+        alert(data.message);
       }
     } catch (error) {
       console.error("Error during login:", error);
       alert("Something went wrong during login.");
     }
+  }
+
+  function logout() {
+    localStorage.removeItem("authToken");
+    showHomePage();
   }
 
   async function publishBook() {
@@ -95,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const token = localStorage.getItem("authToken");
 
-      const response = await fetch("http://localhost:3000/api/books/publish", {
+      const response = await fetch("http://localhost:3000/api/publish", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -110,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Book published successfully!");
         getUserBooks(); // Refresh the user's books after publishing
       } else {
-        alert(`Error: ${data.message}`);
+        alert(`Error: something went wrong!`);
       }
     } catch (error) {
       console.error("Error during book publishing:", error);
@@ -137,9 +142,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       if (response.ok) {
-        displaySearchResults(data);
+        displaySearchResults(data.data);
       } else {
-        alert(`Error: ${data.message}`);
+        alert(`Error: something went wrong!`);
       }
     } catch (error) {
       console.error("Error during book search:", error);
@@ -193,6 +198,8 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const token = localStorage.getItem("authToken");
 
+      console.log(token);
+
       const response = await fetch("http://localhost:3000/api/books/user", {
         method: "GET",
         headers: {
@@ -203,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       if (response.ok) {
-        displayUserBooks(data);
+        displayUserBooks(data.data);
       } else {
         alert(`Error: ${data.message}`);
       }
@@ -217,27 +224,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const userBooksContainer = document.getElementById("userBooks");
     userBooksContainer.innerHTML = "";
 
-    books.forEach((book) => {
-      const bookElement = document.createElement("div");
-      bookElement.classList.add("book");
-      bookElement.textContent = `${book.title} by ${book.author}`;
-      userBooksContainer.appendChild(bookElement);
-    });
+    if (books && books.length > 0) {
+      books.forEach((book) => {
+        const bookElement = document.createElement("div");
+        bookElement.classList.add("book");
+        bookElement.textContent = `${book.title} by ${book.author}`;
+        userBooksContainer.appendChild(bookElement);
+      });
+    } else {
+      const noBooksMessage = document.createElement("p");
+      noBooksMessage.textContent = "You have not published any books yet.";
+      userBooksContainer.appendChild(noBooksMessage);
+    }
   }
 
   async function getPublishedBooks() {
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/books/published",
-        {
-          method: "GET",
-        }
-      );
+      const response = await fetch("http://localhost:3000/api/published", {
+        method: "GET",
+      });
 
       const data = await response.json();
 
       if (response.ok) {
-        displayPublishedBooks(data);
+        displayPublishedBooks(data.data);
       } else {
         alert(`Error: ${data.message}`);
       }
@@ -251,13 +261,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const publishedBooksContainer = document.getElementById("publishedBooks");
     publishedBooksContainer.innerHTML = "";
 
-    books.forEach((book) => {
-      const bookElement = document.createElement("div");
-      bookElement.classList.add("book");
-      bookElement.textContent = `${book.title} by ${book.author}`;
-      publishedBooksContainer.appendChild(bookElement);
-    });
+    if (books && books.length > 0) {
+      books.forEach((book) => {
+        const bookElement = document.createElement("div");
+        bookElement.classList.add("book");
+        const bookInfo = document.createElement("p");
+        bookInfo.textContent = `${book.title} by ${book.author}`;
+        bookElement.appendChild(bookInfo);
+        publishedBooksContainer.appendChild(bookElement);
+      });
+    } else {
+      const noBooksMessage = document.createElement("p");
+      noBooksMessage.textContent = "No published books available.";
+      publishedBooksContainer.appendChild(noBooksMessage);
+    }
   }
+
+  document.getElementById("logoutButton").addEventListener("click", logout);
 
   // Check if the user is already logged in (has a valid token)
   const storedToken = localStorage.getItem("authToken");
