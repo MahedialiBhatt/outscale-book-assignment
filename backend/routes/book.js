@@ -16,11 +16,11 @@ router.put("/unpublish/:bookId", verifyToken, async (req, res) => {
   return await bookController.unpublishBook(req, res);
 });
 
-router.get("/user", verifyToken, async (req, res) => {
+router.get("/books/user", verifyToken, async (req, res) => {
   return await bookController.getUserBooks(req, res);
 });
 
-router.get("/published", verifyToken, async (req, res) => {
+router.get("/published", async (req, res) => {
   return await bookController.getPublishedBooks(req, res);
 });
 
